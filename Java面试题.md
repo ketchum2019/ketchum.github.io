@@ -244,6 +244,19 @@ JVM所管理的内存分为以下几个运行时数据区：程序计数器、Ja
 
 实现：在java.lang.ClassLoader的loadClass()方法中，先检查是否已经被加载过，若没有加载则调用父类加载器的loadClass()方法，若父加载器为空则默认使用启动类加载器作为父加载器。如果父加载失败，则抛出ClassNotFoundException异常后，再调用自己的findClass()方法进行加载。
 
+## 描述一下 JVM 加载 Class 文件的原理机制 ##
+- Java 语言是一种具有动态性的解释型语言，类（Class）只有被加载到 JVM 后才能运行。当运行指定程序时，JVM 会将编译生成 的 .class 文件按照需求和一定的规则加载到内存中，并组织成为 一个完整的 Java 应用程序。 这个加载过程是由类加载器完成， 具体来说，就是由 ClassLoader 和它的子类来实现的。类加载器本身也是一个类，其**实质是把类文件从硬盘读取到内存中。**
+- 类的加载方式分为隐式加载和显示加载。 隐式加载指的是程序在使用 new 等方式创建对象时，会隐式地调用类的加载器把对应的类加载到 JVM 中。 显示加载指的是通过直接调用 class.forName() 方法来把所需的类加载到 JVM 中。 
+- 类加载的主要步骤： 
+```
+• 装载。根据查找路径找到相应的 class 文件，然后导入。 
+• 链接。链接又可分为 3 个小步： 
+• 检查，检查待加载的 class 文件的正确性。 
+• 准备，给类中的静态变量分配存储空间。 
+• 解析，将符号引用转换为直接引用（这一步可选） 
+• 初始化。对静态变量和静态代码块执行初始化工作。
+```
+
 # 多线程 #
 ## Thread与Runable如何实现多线程 ##
 **一种是继承Thread类**；**另一种是实现Runnable接口**。两种方式都要通过重写run()方法来定义线程的行为，推荐使用后者，因为Java中的继承是单继承，一个类有一个父类，如果继承了Thread类就无法再继承其他类了，显然使用Runnable接口更为灵活。
@@ -400,7 +413,7 @@ varchar的存储方式是，对每个英文字符占用2个字节，汉字也占
 
 ## 索引的创建步骤是怎么样的？ ##
 通过ALTER TABLE ADD/DROP或者CREATE/DROP INDEX 可以创建和删除索引。
-```
+``` 
 //ALTER 命令可以为表增加主键索引，唯一性索引，普通索引
 ALTER TABLE table_name add primary key (column_list) ;
 ALTER TABLE table_name ADD INDEX index_name (column list);
@@ -412,6 +425,9 @@ DROP index index_name on table_name (column_list);
 
 ***
 
+
+
+
 # HTTP #
 ##  ##
 
@@ -421,5 +437,12 @@ DROP index index_name on table_name (column_list);
 
 
 ## 待解决：##
-[%] 1. 为什么要重写hashcode和equal（）？
+### 常用排序算法空间时间复杂度 ###
+### 网络层的功能，子网掩码的用途 ###
+### DNS服务器基本流程，DNS劫持是什么，DNS解析 ###
+### hashmap添加操作和resize ###
+### 为什么要反射？什么时候用？有什么缺点 ###
+### http1 2 3的区别具体说一下 ###
+
+- [x] 1. 为什么要重写hashcode和equal（）？
 
