@@ -298,3 +298,139 @@ public class Solution {
 >
 > 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
+```
+public class Solution {
+    public String LeftRotateString(String str, int n) {
+        if (str == null || str.length() == 0 || n < 1 || n >= str.length()) {
+            return str;
+        }
+        char[] data = str.toCharArray();
+        // 翻转字符串的前面n个字符
+        reverse(data, 0, n - 1);
+        // 翻转字符串的后面部分
+        reverse(data, n, data.length - 1);
+        // 翻转整个字符串
+        reverse(data, 0, data.length - 1);
+        return new String(data);
+    }
+    
+    private void reverse(char[] data, int start, int end) {
+        while (start < end) {
+            char temp = data[start];
+            data[start] = data[end];
+            data[end] = temp;
+            start++;
+            end--;
+        }
+    }
+}
+```
+
+## 57. 和为s的数字
+
+> 题目一：和为s的两个数字。
+>
+> 输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，如果有多对数字的和等于S，则输出任意一对即可
+
+## 56. 数组中数字出现的次数 ##
+
+> 题目一：数组中只出现一次的两个数字。
+>
+> 一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是O(n)，空间复杂度是O(1)。
+
+两个不相等的元素在位级表示上必定会有一位存在不同，将数组的所有元素异或得到的结果为不存在重复的两个元素异或的结果。
+
+diff &= -diff 得到出 diff 最右侧不为 0 的位，也就是不存在重复的两个元素在位级表示上最右侧不同的那一位，利用这一位就可以将两个元素区分开来。
+
+```
+public void FindNumsAppearOnce(int[] nums, int num1[], int num2[]) {
+    int diff = 0;
+    for (int num : nums)
+        diff ^= num;
+    diff &= -diff;
+    for (int num : nums) {
+        if ((num & diff) == 0)
+            num1[0] ^= num;
+        else
+            num2[0] ^= num;
+    }
+}
+```
+
+## 55. 二叉树的深度
+
+> 题目一：二叉树的深度
+>
+> 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
+
+```
+public class Solution {
+    public int TreeDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(TreeDepth(root.left), TreeDepth(root.right)) + 1;
+    }
+}
+```
+
+> 题目二：平衡二叉树
+>
+> 输入一棵二叉树，判断该二叉树是否是平衡二叉树。如果某二叉树中任意节点的左、右子树的深度相差不超过1，那么它就是一棵平衡二叉树。
+
+```
+public class Solution {
+    private int mDepth;
+    
+    public boolean IsBalanced_Solution(TreeNode root) {
+        if (root == null) {
+            mDepth = 0;
+            return true;
+        }
+        if (!IsBalanced_Solution(root.left)) {
+            return false;
+        }
+        int left = mDepth;
+        if (!IsBalanced_Solution(root.right)) {
+            return false;
+        }
+        int right = mDepth;
+        int diff = left - right;
+        if (diff <= 1 && diff >= -1) {
+            mDepth = 1 + (left > right ? left : right);
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+```
+
+## 54. 二叉搜索树的第k大节点
+
+> 题目：给定一棵二叉搜索树，请找出其中的第k小的结点。例如，（5，3，7，2，4，6，8）中，按结点数值大小顺序第三小结点的值为4。
+>
+> [https://www.nowcoder.com/practice/ef068f602dde4d28aab2b210e859150a]
+
+中序遍历可以找出二叉搜索树的第k大节点
+
+```
+private TreeNode ret;
+private int cnt = 0;
+
+public TreeNode KthNode(TreeNode pRoot, int k) {
+    inOrder(pRoot, k);
+    return ret;
+}
+
+private void inOrder(TreeNode root, int k) {
+    if (root == null || cnt >= k)
+        return;
+    inOrder(root.left, k);
+    cnt++;
+    if (cnt == k)
+        ret = root;
+    inOrder(root.right, k);
+}
+```
+
