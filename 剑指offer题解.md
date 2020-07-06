@@ -434,3 +434,33 @@ private void inOrder(TreeNode root, int k) {
 }
 ```
 
+## 55. 在排序数组中查找数字
+
+> 题目一：数字在排序数组中出现的次数。
+>
+> 统计一个数字在排序数组中出现的次数。例如，输入排序数组{1, 2, 3, 3, 3, 3, 4, 5}和数字3，由于3在这个数组中出现了4次，因此输出4。
+
+```
+public int GetNumberOfK(int[] nums, int K) {
+    int first = binarySearch(nums, K);
+    int last = binarySearch(nums, K + 1);
+    return (first == nums.length || nums[first] != K) ? 0 : last - first;
+}
+
+private int binarySearch(int[] nums, int K) {
+    int l = 0, h = nums.length;
+    while (l < h) {
+        int m = l + (h - l) / 2;
+        if (nums[m] >= K)
+            h = m;
+        else
+            l = m + 1;
+    }
+    return l;
+}
+```
+
+> 题目二：0~n-1中缺失的数字
+>
+> 一个长度为n-1的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围0 ~ n-1之内。在范围0 ~ n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字
+
