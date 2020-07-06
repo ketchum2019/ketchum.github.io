@@ -463,4 +463,76 @@ private int binarySearch(int[] nums, int K) {
 > 题目二：0~n-1中缺失的数字
 >
 > 一个长度为n-1的递增排序数组中的所有数字都是唯一的，并且每个数字都在范围0 ~ n-1之内。在范围0 ~ n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字
+>
+> 解题思路：二分查找：找到第一个元素和下标不等的数字
+
+```
+public int getMissingNumber(int[] numbers) {
+    if (numbers == null || numbers.length == 0) {
+        return -1;
+    }
+    int left = 0, right = numbers.length - 1;
+    while (left <= right) {
+        int mid = (left + right) >> 1;
+        if (numbers[mid] != mid) {
+            if (mid == 0 || numbers[mid - 1] == mid - 1) {
+                return mid;
+            }
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if (left == numbers.length) {
+        return left;
+    }
+    // 无效的输入，比如数组不是按要求排序的，
+    // 或者有数字不在0~n-1范围之内
+    return -1;
+}
+```
+
+## 52. 两个链表的第一个公共节点
+
+```
+public class Solution {
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        if (pHead1 == null || pHead2 == null) {
+            return null;
+        }
+        ListNode p1 = pHead1, p2 = pHead2;
+        // 得到两个链表的长度
+        int len1 = 0, len2 = 0;
+        while (p1 != null) {
+            len1++;
+            p1 = p1.next;
+        }
+        while (p2 != null) {
+            len2++;
+            p2 = p2.next;
+        }
+        int delta = len2 - len1;
+        p1 = pHead1;
+        p2 = pHead2;
+        // 先在长链表上走几步，再同时在两个链表上遍历
+        if (delta < 0) {
+            while (delta != 0) {
+                p1 = p1.next;
+                delta++;
+            }
+        } else {
+            while (delta != 0) {
+                p2 = p2.next;
+                delta--;
+            }
+        }
+        while (p1 != p2) {
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        // 得到第一个公共节点
+        return p1;
+    }
+}
+```
 
