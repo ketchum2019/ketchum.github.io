@@ -536,3 +536,109 @@ public class Solution {
 }
 ```
 
+## 51. 数组中的逆序对
+
+> 题目：在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出，即输出P%1000000007。例如，在数组{7, 5, 6, 4}中，一共存在5个逆序对，分别是(7, 6)、(7, 5)、(7, 4)、(6, 4)和(5, 4)。
+>
+> 解题思路：归并排序
+
+```java
+public class Solution {
+    public int InversePairs(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int[] copy = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            copy[i] = array[i];
+        }
+        return inverse(array, copy, 0, array.length - 1);
+    }
+    
+    private int inverse(int[] array, int[] copy, int start, int end) {
+        if (start == end) {
+            return 0;
+        }
+        int mid = (start + end) / 2;
+        int left = inverse(copy, array, start, mid);
+        int right = inverse(copy, array, mid + 1, end);
+        int leftIndex = mid, rightIndex = end, copyIndex = end, count = 0;
+        while (leftIndex >= start && rightIndex > mid) {
+            if (array[leftIndex] > array[rightIndex]) {
+                copy[copyIndex--] = array[leftIndex--];
+                count += rightIndex - mid;
+                if (count >= 1000000007) {
+                    count %= 1000000007;
+                }
+            } else {
+                copy[copyIndex--] = array[rightIndex--];
+            }
+        }
+        while (leftIndex >= start) {
+            copy[copyIndex--] = array[leftIndex--];
+        }
+        while (rightIndex > mid) {
+            copy[copyIndex--] = array[rightIndex--];
+        }
+        return (left + right + count) % 1000000007;
+    }
+}
+```
+
+## 50. 第一个只出现一次的字符
+
+> 题目一：字符串中第一个只出现一次的字符。
+>
+> 在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）。
+
+解决方案：哈希表
+
+```java
+public class Solution {
+    public int FirstNotRepeatingChar(String str) {
+        if (str == null || str.length() == 0) {
+            return -1;
+        }
+        int[] counts = new int[256];
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            counts[c]++;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (counts[str.charAt(i)] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+## 49. 丑数
+
+> 题目：把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+
+```java
+public class Solution {
+    public int GetUglyNumber_Solution(int index) {
+        if (index <= 0) {
+            return 0;
+        }
+        int[] ugly = new int[index];
+        ugly[0] = 1;
+        for (int i = 1, multiply2 = 0, multiply3 = 0, multiply5 = 0; i < index; i++) {
+            ugly[i] = Math.min(ugly[multiply2] * 2, Math.min(ugly[multiply3] * 3, ugly[multiply5] * 5));
+            while (ugly[multiply2] * 2 <= ugly[i]) {
+                multiply2++;
+            }
+            while (ugly[multiply3] * 3 <= ugly[i]) {
+                multiply3++;
+            }
+            while (ugly[multiply5] * 5 <= ugly[i]) {
+                multiply5++;
+            }
+        }
+        return ugly[index - 1];
+    }
+}
+```
