@@ -1,7 +1,7 @@
 # 剑指offer题解
 ## 68. 最低公共祖先
 
-```
+```java
 public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
     if (root == null || root == p || root == q)
         return root;
@@ -769,7 +769,21 @@ class Solution {
 }
 ```
 
-## 43. 1~n整数中1出现的次数
+## 43. 1~n整数中1出现的次数（未理解）
 
 > 题目：输入一个整数n，求1 ~ n这n个整数的十进制表示中1出现的次数。例如，输入12，1 ~ 12这些整数中包含1的数字有1、10、11和12，1一共出现了5次。
+>
+> https://leetcode.com/problems/number-of-digit-one/discuss/64381/4+-lines-O(log-n)-C++JavaPython
 
+```java
+public int NumberOf1Between1AndN_Solution(int n) {
+    int cnt = 0;
+    for (int m = 1; m <= n; m *= 10) {
+        int a = n / m, b = n % m;
+        cnt += (a + 8) / 10 * m + (a % 10 == 1 ? b + 1 : 0);
+    }
+    return cnt;
+}
+```
+
+## 42. 连续子数组的最大和
