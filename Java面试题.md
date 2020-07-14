@@ -9,7 +9,15 @@ Vector 是线程安全的，也就是说是它的方法之间是线程同步的�
 
 ## 2. 什么是 java 序列化，如何实现序列化，如何实现 java 序列化？或者请解释序列化？或者请解释 Serializable 接口的作用接口的作用 ##
 
- 将一个 java 对象变成字节流的形式传出去或者从一个字节流中恢复成一个 java对象。jre 本身就提供了这种支持，我们可以调用 OutputStream 的 writeObject 方法来做，如果要让 java 帮我们做，要被传输的对象必须实现 serializable 接口。其中没有需要实现的方法， **implements Serializable只是为了标注该对象是可被序列化的。**
+ 将一个 java 对象变成字节流的形式传出去或者从一个字节流中恢复成一个 java对象。
+
+jre 本身就提供了这种支持，我们可以调用 OutputStream 的 writeObject 方法来做，如果要让 java 帮我们做，要被传输的对象必须实现 serializable 接口。
+
+反序列化步骤：步骤一：创建一个ObjectInputStream输入流；步骤二：调用jectInputStream对象的readObject()得到序列化的对象
+
+**Externalizable：强制自定义序列化：**通过实现Externalizable接口，必须实现writeExternal、readExternal方法。
+
+其中没有需要实现的方法， **implements Serializable只是为了标注该对象是可被序列化的。**
 
 ## 3. 堆和栈的区别 ##
 
@@ -99,7 +107,7 @@ servlet 有良好的生存期的定义，包括加载和实例化、初始化、
 |wait(long timeout)	|void		|在其他线程调用此对象的notify()/notifyAll()方法前，或超过指定的时间量前，使当前线程等待|
 |wait(long timeout,int nanos)	|void|在其他线程调用此对象的notify()/notifyAll()方法前，或超过指定时间量前，或其他某个线程中断当前线程前，是当前线程等待|
 
-## Java内存泄漏 ##
+## 18. Java内存泄漏 ##
 
 1. 静态集合类引起内存泄漏
 > 像HashMap、Vector等的使用最容易出现内存泄露，这些静态变量的生命周期和应用程序一致，他们所引用的所有的对象Object也不能被释放
@@ -152,7 +160,7 @@ System.out.println("总共有:"+set.size()+" 个元素!"); //结果：总共有:
 	} 
 	```
 
-## equals和hashCode方法的关系 ##
+## 19. equals和hashCode方法的关系 ##
 
 1.  x.equals(y) 返回 “true”，那么 hashCode() 必须相等 ；
 2.   x.equals(y) 返回 “false”，那么 hashCode() 有可能相等，也有可能不等 
@@ -165,7 +173,7 @@ System.out.println("总共有:"+set.size()+" 个元素!"); //结果：总共有:
 > 3. hashcode相等，两个对象不⼀定相等
 > 4. hashcode不等，两个对象⼀定不等
 
-## equals方法和==的区别 ##
+## 20. equals方法和==的区别 ##
 对于关系操作符 ==：
 >若操作数的类型是基本数据类型，则该关系操作符判断的是左右两边操作数的值是否相等
 若操作数的类型是引用数据类型，则该关系操作符判断的是左右两边操作数的内存地址是否相同。也就是说，若此时返回true,则该操作符作用      的一定是同一个对象。
@@ -175,6 +183,69 @@ equals方法的作用
 很显然，在Object类中，equals方法是用来比较两个对象的引用是否相等，即是否指向同一个对象。使用equals方法，内部实现分为三个步骤：先比较引用是否相同(是否为同一对象), 再判断类型是否一致（是否为同一类型）,最后比较内容是否一致
 
 ***
+
+# HashMap、ConcurrentHashMap
+
+### HaspMap添加操作和resize ###
+
+### HaspMap为什么使用数组+链表？用LinkedList代替数组可以吗？
+
+https://zhuanlan.zhihu.com/p/127147909
+
+既然是可以的，为什么不用反而用数组。因为⽤数组效率最⾼！ 在HashMap中，定位节点的位置是利⽤元素的key的哈希值对数组长度取模得到。此时，我们已得到节点的位置。显然数组的查找效率⽐`LinkedList`⼤（底层是链表结构）。那`ArrayList`，底层也是数组，查找也快啊，为啥不⽤ArrayList? 因为采⽤基本数组结构，扩容机制可以⾃⼰定义，HashMap中数组扩容刚好是**2的次幂**，在做取模运算的效率⾼。 ⽽ArrayList的扩容机制是1.5倍扩容
+
+## 讲一讲HashMap的get/put过程
+
+> 知道HashMap的put元素的过程是什么样吗？
+>
+> 知道get过程是是什么样吗？
+>
+> 你还知道哪些的hash算法？
+>
+> 说一说String的hashcode的实现
+
+### Put方法
+
+1. 对key的hashCode()做hash运算，计算index;
+2. 如果没碰撞直接放到bucket⾥；
+3. 如果碰撞了，以链表的形式存在buckets后；
+4. 如果碰撞导致链表过长(⼤于等于TREEIFY_THRESHOLD)，就把链表转换成红⿊树(JDK1.8中的改动)；
+5. 如果节点已经存在就替换old value(保证key的唯⼀性)
+6. 如果bucket满了(超过load factor*current capacity)，就要resize
+
+在得到下标值以后，可以开始put值进入到数组+链表中，会有三种情况：
+
+1. 数组的位置为空。
+2. 数组的位置不为空，且面是链表的格式。
+3. 数组的位置不为空，且下面是红黑树的格式。
+
+同时 对于`Key` 和`Value` 也要经历一下步骤
+
+- 通过 Key 散列获取到对于的Table；’
+- 遍历Table 下的Node节点，做更新/添加操作；
+- 扩容检测；
+
+以上就是`HashMap`的Put操作
+
+### resise方法
+
+HashMap 的扩容实现机制是将老table数组中所有的Entry取出来，重新对其Hashcode做`Hash`散列到新的Table中，可以看到注解`Initializes or doubles table size.` resize表示的是对数组进行初始化或进行Double处理。
+
+### get方法
+
+1. 对key的hashCode()做hash运算，计算index;
+2. 如果在bucket⾥的第⼀个节点⾥直接命中，则直接返回；
+3. 如果有冲突，则通过key.equals(k)去查找对应的Entry;
+4. 若为树，则在树中通过key.equals(k)查找，O(logn)；
+5. 若为链表，则在链表中通过key.equals(k)查找，O(n)。
+
+### HashMap在高并发下如果没有处理线程安全会有怎样的安全隐患，具体表现是什么
+
+Hashmap在并发环境下，可能出现的问题：
+
+1. **多线程put时可能会导致get无限循环**，具体表现为CPU使用率100%；
+   原因：在向HashMap put元素时，会检查HashMap的容量是否足够，如果不足，则会新建一个比原来容量大两倍的Hash表，然后把数组从老的Hash表中迁移到新的Hash表中，迁移的过程就是一个rehash()的过程，多个线程同时操作就有可能会形成循环链表，所以在使用get()时，就会出现Infinite Loop的情况
+2. **多线程put时可能导致元素丢失** 原因：当多个线程同时执行addEntry(hash,key ,value,i)时，如果产生哈希碰撞，导致两个线程得到同样的bucketIndex去存储，就可能会发生元素覆盖丢失的情况
 
 # JVM面试题 #
 
@@ -560,7 +631,7 @@ TCP 粘包/分包的原因：应用程序写入的字节大小大于套接字发
 
 
 
-## 待解决：
+# 待解决：
 
 ### 常用排序算法空间时间复杂度 ###
 
@@ -570,63 +641,17 @@ TCP 粘包/分包的原因：应用程序写入的字节大小大于套接字发
 
 **DNS劫持**：就是通过劫持了DNS服务器，通过某些手段取得某域名的解析记录控制权，进而修改此域名的解析结，导致对该域名的访问由原IP地址转入到修改后的指定IP，其结果就是对特定的网址不能访问或访问的是假网址，从而实现窃取资料或者破坏原有正常服务的目的。DNS劫持通过篡改DNS服务器上的数据返回给用户一个错误的查询结果来实现的。
 
-### HaspMap添加操作和resize ###
-
-### HaspMap为什么使用数组+链表？用LinkedList代替数组可以吗？
-
-https://zhuanlan.zhihu.com/p/127147909
-
-既然是可以的，为什么不用反而用数组。因为⽤数组效率最⾼！ 在HashMap中，定位节点的位置是利⽤元素的key的哈希值对数组长度取模得到。此时，我们已得到节点的位置。显然数组的查找效率⽐`LinkedList`⼤（底层是链表结构）。那`ArrayList`，底层也是数组，查找也快啊，为啥不⽤ArrayList? 因为采⽤基本数组结构，扩容机制可以⾃⼰定义，HashMap中数组扩容刚好是**2的次幂**，在做取模运算的效率⾼。 ⽽ArrayList的扩容机制是1.5倍扩容
-
-## 讲一讲HashMap的get/put过程
-
-> 知道HashMap的put元素的过程是什么样吗？
->
-> 知道get过程是是什么样吗？
->
-> 你还知道哪些的hash算法？
->
-> 说一说String的hashcode的实现
-
-### Put方法
-
-1. 对key的hashCode()做hash运算，计算index;
-2. 如果没碰撞直接放到bucket⾥；
-3. 如果碰撞了，以链表的形式存在buckets后；
-4. 如果碰撞导致链表过长(⼤于等于TREEIFY_THRESHOLD)，就把链表转换成红⿊树(JDK1.8中的改动)；
-5. 如果节点已经存在就替换old value(保证key的唯⼀性)
-6. 如果bucket满了(超过load factor*current capacity)，就要resize
-
-在得到下标值以后，可以开始put值进入到数组+链表中，会有三种情况：
-
-1. 数组的位置为空。
-2. 数组的位置不为空，且面是链表的格式。
-3. 数组的位置不为空，且下面是红黑树的格式。
-
-同时 对于`Key` 和`Value` 也要经历一下步骤
-
-- 通过 Key 散列获取到对于的Table；’
-- 遍历Table 下的Node节点，做更新/添加操作；
-- 扩容检测；
-
-以上就是`HashMap`的Put操作
-
-### resise方法
-
-HashMap 的扩容实现机制是将老table数组中所有的Entry取出来，重新对其Hashcode做`Hash`散列到新的Table中，可以看到注解`Initializes or doubles table size.` resize表示的是对数组进行初始化或进行Double处理。
-
-### get方法
-
-1. 对key的hashCode()做hash运算，计算index;
-
-2. 如果在bucket⾥的第⼀个节点⾥直接命中，则直接返回；
-
-3. 如果有冲突，则通过key.equals(k)去查找对应的Entry;
-
-4. 若为树，则在树中通过key.equals(k)查找，O(logn)；
-5. 若为链表，则在链表中通过key.equals(k)查找，O(n)。
+2. 
 
 ### 为什么要反射？什么时候用？有什么缺点 ###
+
+### **枚举Enumeration 和Iterator接口之间的差异是什么**
+
+枚举是快迭代两倍，使用非常少的内存。枚举适合基本需求。但Iterator是更安全，因为它总是拒绝其他线程修改它正在迭代集合中的对象。
+
+foreach循环**适用范围：**对于任何实现Iterable接口的容器都可以使用foreach循环。foreach语法的冒号后面可以有两种类型：一种是数组，另一种是是实现了Iterable接口的类。
+
+
 
 ### http1 2 3的区别具体说一下 ###
 
