@@ -1,4 +1,4 @@
-# 欢迎来到 ketchum2019.github.io wiki! #
+# 欢迎Java基础
 
 ## 1.  ArrayList 和 Vector 的区别  ##
 
@@ -11,13 +11,13 @@ Vector 是线程安全的，也就是说是它的方法之间是线程同步的�
 
  将一个 java 对象变成字节流的形式传出去或者从一个字节流中恢复成一个 java对象。
 
-jre 本身就提供了这种支持，我们可以调用 OutputStream 的 writeObject 方法来做，如果要让 java 帮我们做，要被传输的对象必须实现 serializable 接口。
+jre 本身就提供了这种支持，我们可以调用 OutputStream 的 writeObject 方法来做，如果要让 java 帮我们做，要被传输的对象必须**实现 serializable 接口。**
 
 反序列化步骤：步骤一：创建一个ObjectInputStream输入流；步骤二：调用jectInputStream对象的readObject()得到序列化的对象
 
-**Externalizable：强制自定义序列化：**通过实现Externalizable接口，必须实现writeExternal、readExternal方法。
-
 其中没有需要实现的方法， **implements Serializable只是为了标注该对象是可被序列化的。**
+
+**Externalizable：强制自定义序列化：**通过实现Externalizable接口，必须实现writeExternal、readExternal方法。
 
 ## 3. 堆和栈的区别 ##
 
@@ -58,7 +58,7 @@ servlet 有良好的生存期的定义，包括加载和实例化、初始化、
 
 ## 10. Hashset和TreeSet的区别 ##
  1. HashSet是由一个hash表来实现的，因此它的元素是无序的
- 2. TreeSer是由一个树形结构来实现的，它的元素是有序的，add() remove() contains()的复杂度是O(logn)
+ 2. TreeSet是由一个树形结构来实现的，它的元素是有序的，add() remove() contains()的复杂度是O(logn)
 
 ## 11. LinkedHashMap的实现原理 ##
 > LinkedHashMap是基于HashMap实现的，它通过继承hashmap中的entry并添加两个属性Entry，before， after和header结合起来组成一个双向链表来实现插入顺序和访问顺序的排序。LinkedHashMap定义了排序模式AccessOder。 
@@ -69,16 +69,15 @@ servlet 有良好的生存期的定义，包括加载和实例化、初始化、
  3. ListIterator实现了Iterator接口，并包含其他功能，如：增加元素，替换元素，获取前一个和后一个元素的索引
 
 ## 13. stop(), suspend()为何不推荐使用？
- 1. 反对使用stop()是因为它不安全。它会解除有现成获取的所有锁定，而且如果对象处于一种不连贯的状态，那么其他线程在那种状态检查和修改它们，很难监察处真正的问题
- 2. suspend()方法容易发生死锁。调用suspend（）的时候，目标线程会停下来，但却仍然持有之前获得的锁定。此时其他任何线程都不能访问锁定的资源。对于任何线程
+ 1. 反对使用stop()是因为它不安全。它会解除所有现成获取的所有锁定，而且如果对象处于一种不连贯的状态，那么其他线程在那种状态检查和修改它们，很难监察处真正的问题
+ 2. suspend()方法容易发生死锁。调用suspend（）的时候，目标线程会停下来，但却仍然持有之前获得的锁定。此时其他任何线程都不能访问锁定的资源。
 
 ## 14. 简述sychronized和java.util.concurrent.Lock的异同 ##
  1. 主要相同点：Lock能完成sychronized所实现的所有功能
  2. 主要不同点：Lock有比sychronized更精确的线程语义和更好的性能。sychronized会自动释放锁，而Lock一定要求程序员手动释放，并且必须在finally中释放，它的tryLock方法可以以非阻塞的方式去获取锁
 
 ## 15. volatile 变量是什么？volatile 变量和 atomic 变量有什么不同？ ##
- 1. volatile 则是保证了所修饰的变量的可见。因为 volatile 只是在保证了同一个变量在多线程中的可见性，所以它更多是用于修饰作为开关状态的变量，即 Boolean 类型的
-变量。 
+  1. volatile 则是保证了所修饰的变量的可见。因为 volatile 只是在保证了同一个变量在多线程中的可见性，所以它更多是用于修饰作为开关状态的变量，即 Boolean 类型的变量。 
  2. volatile 多用于修饰类似开关类型的变量、Atomic 多用于类似计数器相关的变量、其它多线程并发操作用 synchronized 关键字修饰。
  3. volatile 有两个功用： 
  -  这个变量不会在多个线程中存在复本，直接从内存读取。 
@@ -182,6 +181,45 @@ equals方法的作用
 >初衷 ： 判断两个对象的 content 是否相同
 很显然，在Object类中，equals方法是用来比较两个对象的引用是否相等，即是否指向同一个对象。使用equals方法，内部实现分为三个步骤：先比较引用是否相同(是否为同一对象), 再判断类型是否一致（是否为同一类型）,最后比较内容是否一致
 
+## 21. Error和Exception
+
+1. Error（错误）
+   定义：Error 类及其子类。程序中无法处理的错误，表示运行应用程序中出现了严重的错误。
+
+   特点：此类错误一般表示代码运行时 JVM 出现问题。通常有 **Virtual MachineError（虚拟机运行错误）、NoClassDefFoundError（类定义错误）等。比如 OutOfMemoryError：内存不足错误；StackOverflowError**：栈溢出错误。此类错误发生时，JVM 将终止线程。
+
+   这些错误是不受检异常，非代码性错误。因此，当此类错误发生时，应用程序不应该去处理此类错误。按照Java惯例，我们是不应该实现任何新的Error子类的！
+
+3. Exception（异常）
+  程序本身可以捕获并且可以处理的异常。Exception 这种异常又分为两类：运行时异常和编译时异常。
+
+  运行时异常
+  定义：**RuntimeException** 类及其子类，表示 JVM 在运行期间可能出现的异常。
+
+  特点：Java 编译器不会检查它。也就是说，当程序中可能出现这类异常时，倘若既"没有通过throws声明抛出它"，也"没有用try-catch语句捕获它"，还是会编译通过。比如**NullPointerException空指针异常、ArrayIndexOutBoundException数组下标越界异常、ClassCastException类型转换异常、ArithmeticExecption算术异常**。此类异常属于不受检异常，一般是由程序逻辑错误引起的，在程序中可以选择捕获处理，也可以不处理。虽然 Java 编译器不会检查运行时异常，但是我们也可以通过 throws 进行声明抛出，也可以通过 try-catch 对它进行捕获处理。
+
+## 22. throw 和 throws 的区别是什么
+
+Java 中的异常处理除了包括捕获异常和处理异常之外，还包括声明异常和拋出异常，可以通过 throws 关键字在方法上声明该方法要拋出的异常，或者在方法内部通过 throw 拋出异常对象。
+
+throws 关键字和 throw 关键字在使用上的几点区别如下：
+
+1. throw 关键字用在方法内部，只能用于抛出一种异常，用来抛出方法或代码块中的异常，受查异常和非受查异常都可以被抛出。
+
+2. throws 关键字用在方法声明上，可以抛出多个异常，用来标识该方法可能抛出的异常列表。一个方法用 throws 标识了可能抛出的异常列表，调用该方法的方法中必须包含可处理异常的代码，否则也要在方法签名中用 throws 关键字声明相应的异常。
+
+## ArrayList和LinkedList
+
+- HashSet底层使用了Hash表实现。无序。保证元素唯一性的原理：判断元素的hashCode值是否相同。如果相同，还会继续判断元素的equals方法，是否为true
+
+- TreeSet底层使用了红黑树来实现。有序。保证元素唯一性是通过Comparable或者Comparator接口实现
+
+## Java动态代理
+
+代理类在程序运行时创建的代理方式被成为动态代理。
+
+JDK动态代理主要涉及两个类：`java.lang.reflect.Proxy` 和 `java.lang.reflect.InvocationHandler`
+
 ***
 
 # HashMap、ConcurrentHashMap
@@ -246,6 +284,13 @@ Hashmap在并发环境下，可能出现的问题：
 1. **多线程put时可能会导致get无限循环**，具体表现为CPU使用率100%；
    原因：在向HashMap put元素时，会检查HashMap的容量是否足够，如果不足，则会新建一个比原来容量大两倍的Hash表，然后把数组从老的Hash表中迁移到新的Hash表中，迁移的过程就是一个rehash()的过程，多个线程同时操作就有可能会形成循环链表，所以在使用get()时，就会出现Infinite Loop的情况
 2. **多线程put时可能导致元素丢失** 原因：当多个线程同时执行addEntry(hash,key ,value,i)时，如果产生哈希碰撞，导致两个线程得到同样的bucketIndex去存储，就可能会发生元素覆盖丢失的情况
+
+## hash冲突
+
+- 拉链法 （HashMap使用的方法）
+- 线性探测再散列法
+- 二次探测再散列法
+- 伪随机探测再散列法
 
 # JVM面试题 #
 
@@ -361,7 +406,24 @@ JVM所管理的内存分为以下几个运行时数据区：程序计数器、Ja
 ```
 
 # 多线程 #
+## 线程间通讯方式
+
+synchronized、notify、wait、volatile
+
+lock、condition
+
+## CAS
+
+CAS是英文单词CompareAndSwap的缩写，中文意思是：比较并替换。CAS需要有3个操作数：内存地址V，旧的预期值A，即将要更新的目标值B。
+
+CAS指令执行时，当且仅当内存地址V的值与预期值A相等时，将内存地址V的值修改为B，否则就什么都不做。整个比较并替换的操作是一个原子操作。
+
+## Synchronized 其原理是什么
+
+ 被 Synchronized 修饰过的程序块，在编译前后被编译器生成了monitorenter 和 monitorexit 两 个 字 节 码 指 令 。在虚拟机执行到 monitorenter 指令时，首先要尝试获取对象的锁: 如果这个对象没有锁定，或者当前线程已经拥有了这个对象的锁，把锁 的计数器 +1;当执行 monitorexit 指令时将锁计数器 -1;当计数器 为 0 时，锁就被释放了。如果获取对象失败了，那当前线程就要阻塞等待，直到对象锁被另外一 个线程释放为止。
+
 ## Thread与Runable如何实现多线程 ##
+
 **一种是继承Thread类**；**另一种是实现Runnable接口**。两种方式都要通过重写run()方法来定义线程的行为，推荐使用后者，因为Java中的继承是单继承，一个类有一个父类，如果继承了Thread类就无法再继承其他类了，显然使用Runnable接口更为灵活。
 
 实现Runnable接口相比继承Thread类有如下优势：
@@ -370,6 +432,28 @@ JVM所管理的内存分为以下几个运行时数据区：程序计数器、Ja
 3. 适合多个相同程序代码的线程区处理同一资源的情况
 
 补充：Java 5以后创建线程还有第三种方式：**实现Callable接口**，该接口中的call方法可以在线程执行结束时产生一个返回值
+
+## **Thread 类中的start() 和 run() 方法有什么区别**
+
+start()方法被用来启动新创建的线程，而且start()内部调用了run()方法，这和直接调用run()方法的效果不一样。当你调用run()方法的时候，只会是在原来的线程中调用，没有新的线程启动，start()方法才会启动新线程，new 一个 Thread，线程进入了新建状态;调用 start() 方法，会启动一个线程并使线程进入了就绪状态，当分配到时间片后就可以开始运行了。start() 会执行线程的相应准备工作，然后自动执行 run() 方法的内容，这是真正的多线程工作。而直接执行 run() 方法，会把 run 方法当成一个 main 线程下的普通方法去执行，并不会在某个线程中执行它，所以这并不是多线程工作。
+
+## Thread类中的yield方法有什么作用
+
+Yield方法可以暂停当前正在执行的线程对象，让其它有相同优先级的线程执行。它是一个静态方法而且只保证当前线程放弃CPU占用而不能保证使其它线程一定能占用CPU，执行yield()的线程有可能在进入到暂停状态后马上又被执行。
+
+线程让步：如果知道已经完成了在run()方法的循环的一次迭代过程中所需的工作，就可以给线程调度机制一个暗示：你的工作已经做得差不多了，可以让别的线程使用CPU了。这个暗示将通过调用yield()方法来做出（不过这只是一个暗示，没有任何机制保证它将会被采纳）。当调用yield()时，也是在建议具有相同优先级的其他线程可以运行。
+
+yield()的作用是让步。它能让当前线程由“运行状态”进入到“就绪状态”，从而让其它具有相同优先级的等待线程获取执行权；但是，并不能保证在当前线程调用yield()之后，其它具有相同优先级的线程就一定能获得执行权；也有可能是当前线程又进入到“运行状态”继续运行！
+
+## 什么是ThreadLocal变量
+
+使用ThreadLocal维护变量时，其为每个使用该变量的线程提供独立的变量副本，所以每一个线程都可以独立的改变自己的副本，而不会影响其他线程对应的副本。
+
+ThreadLocal内部实现机制：
+
+- 每个线程内部都会维护一个类似HashMap的对象，称为ThreadLocalMap，里边会包含若干了Entry（K-V键值对），相应的线程被称为这些Entry的属主线程
+- Entry的Key是一个ThreadLocal实例，Value是一个线程特有对象。Entry的作用是为其属主线程建立起一个ThreadLocal实例与一个线程特有对象之间的对应关系
+- Entry对Key的引用是弱引用；Entry对Value的引用是强引用。
 
 ## 守护线程与阻塞线程 ##
 ava中有两类线程：User Thread(用户线程)、Daemon Thread(守护线程)
@@ -420,7 +504,37 @@ setDaemon(true)必须在调用线程的start()方法之前设置，否则会跑�
 	> 1. CountDownLatch: A synchronization aid that allows one or more threads to wait until a set of operations being performed in other threads completes.(CountDownLatch: 一个或者多个线程，等待其他多个线程完成某件事情之后才能执行；)
 	> 2. CyclicBarrier : A synchronization aid that allows a set of threads to all wait for each other to reach a common barrier point.(CyclicBarrier : 多个线程互相等待，直到到达同一个同步点，再继续一起执行。)
 
-***
+## ThreadPoolExecutor线程池参数
+
+**corePoolSize：** 线程池核心线程数最大值
+
+**maximumPoolSize：** 线程池最大线程数大小
+
+**keepAliveTime：** 线程池中非核心线程空闲的存活时间大小
+
+**unit：** 线程空闲存活时间单位
+
+**workQueue：** 存放任务的阻塞队列
+
+**threadFactory：** 用于设置创建线程的工厂，可以给创建的线程设置有意义的名字，可方便排查问题。
+
+**handler：**  线城池的饱和策略事件，主要有四种类型。
+
+1. 提交一个任务，线程池里存活的核心线程数小于线程数corePoolSize时，线程池会创建一个核心线程去处理提交的任务。
+2. 如果线程池核心线程数已满，即线程数已经等于corePoolSize，一个新提交的任务，会被放进任务队列workQueue排队等待执行。
+3. 当线程池里面存活的线程数已经等于corePoolSize了,并且任务队列workQueue也满，判断线程数是否达到maximumPoolSize，即最大线程数是否已满，如果没到达，创建一个非核心线程执行提交的任务。
+4. 如果当前的线程数达到了maximumPoolSize，还有新的任务过来的话，直接采用拒绝策略处理。
+
+## 几种常用的线程池
+
+newFixedThreadPool (固定数目线程的线程池)
+
+newCachedThreadPool(可缓存线程的线程池)
+
+newSingleThreadExecutor(单线程的线程池)
+
+newScheduledThreadPool(定时及周期执行的线程池)
+
 # MySql #
 
 ## 1. B+树与二叉树区别，优点？为什么不用红黑树？ ##
@@ -627,7 +741,13 @@ TCP 粘包/分包的原因：应用程序写入的字节大小大于套接字发
 6. 流量整型的作用（变压器）：防止由于上下游网元性能不均衡导致下游网元被压垮，业务流中断；防止由于通信模块接受消息过快，后端业务线程处理不及时导致撑死问题。 
 7. TCP 参数配置：SO_RCVBUF 和 SO_SNDBUF：通常建议值为 128K 或者 256K；SO_TCPNODELAY：NAGLE 算法通过将缓冲区内的小封包自动相连，组成较大的封包，阻止大量小封包的发送阻塞网络，从而提高网络应用效率。但是对于时延敏感的应用场景需要关闭该优化算法； 
 
-## 
+## 设计模式
+
+手写单例模式
+
+```
+
+```
 
 
 
