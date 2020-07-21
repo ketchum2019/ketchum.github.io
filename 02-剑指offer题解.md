@@ -814,3 +814,197 @@ public class Solution {
 }
 ```
 
+## 41. 数据流中的中位数
+
+> 题目：如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。我们使用Insert()方法读取数据流，使用GetMedian()方法获取当前读取数据的中位数。
+
+```java
+/* 大顶堆，存储左半边元素 */
+private PriorityQueue<Integer> left = new PriorityQueue<>((o1, o2) -> o2 - o1);
+/* 小顶堆，存储右半边元素，并且右半边元素都大于左半边 */
+private PriorityQueue<Integer> right = new PriorityQueue<>();
+/* 当前数据流读入的元素个数 */
+private int N = 0;
+
+public void Insert(Integer val) {
+    /* 插入要保证两个堆存于平衡状态 */
+    if (N % 2 == 0) {
+        /* N 为偶数的情况下插入到右半边。
+         * 因为右半边元素都要大于左半边，但是新插入的元素不一定比左半边元素来的大，
+         * 因此需要先将元素插入左半边，然后利用左半边为大顶堆的特点，取出堆顶元素即为最大元素，此时插入右半边 */
+        left.add(val);
+        right.add(left.poll());
+    } else {
+        right.add(val);
+        left.add(right.poll());
+    }
+    N++;
+}
+
+public Double GetMedian() {
+    if (N % 2 == 0)
+        return (left.peek() + right.peek()) / 2.0;
+    else
+        return (double) right.peek();
+}
+
+```
+
+## 41.2 字符流中第一个不重复的字符
+
+```java
+private int[] cnts = new int[256];
+private Queue<Character> queue = new LinkedList<>();
+
+public void Insert(char ch) {
+    cnts[ch]++;
+    queue.add(ch);
+    while (!queue.isEmpty() && cnts[queue.peek()] > 1)
+        queue.poll();
+}
+
+public char FirstAppearingOnce() {
+    return queue.isEmpty() ? '#' : queue.peek();
+}
+```
+
+## 40. 最小的K个数
+
+> 题目：输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4。
+
+应该使用大顶堆来维护最小堆，而不能直接创建一个小顶堆并设置一个大小，企图让小顶堆中的元素都是最小元素。
+
+维护一个大小为 K 的最小堆过程如下：在添加一个元素之后，如果大顶堆的大小大于 K，那么需要将大顶堆的堆顶元素去除。
+
+```java
+public ArrayList<Integer> GetLeastNumbers_Solution(int[] nums, int k) {
+    if (k > nums.length || k <= 0)
+        return new ArrayList<>();
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+    for (int num : nums) {
+        maxHeap.add(num);
+        if (maxHeap.size() > k)
+            maxHeap.poll();
+    }
+    return new ArrayList<>(maxHeap);
+}
+```
+
+## 39. 数组中超过一半的数字
+
+> 使用 cnt 来统计一个元素出现的次数，当遍历到的元素和统计元素相等时，令 cnt++，否则令 cnt--。如果前面查找了 i 个元素，且 cnt == 0，说明前 i 个元素没有 majority，或者有 majority，但是出现的次数少于 i / 2 ，因为如果多于 i / 2 的话 cnt 就一定不会为 0 。此时剩下的 n - i 个元素中，majority 的数目依然多于 (n - i) / 2，因此继续查找就能找出 majority。
+
+```java
+public int MoreThanHalfNum_Solution(int[] nums) {
+    int majority = nums[0];
+    for (int i = 1, cnt = 1; i < nums.length; i++) {
+        cnt = nums[i] == majority ? cnt + 1 : cnt - 1;
+        if (cnt == 0) {
+            majority = nums[i];
+            cnt = 1;
+        }
+    }
+    int cnt = 0;
+    for (int val : nums)
+        if (val == majority)
+            cnt++;
+    return cnt > nums.length / 2 ? majority : 0;
+}
+```
+
+## 38. 字符串的排列
+
+> 题目：输入一个字符串，按字典序打印出该字符串中字符的所有排列。例如输入字符串abc，则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
+
+```java
+import java.util.*;
+public class Solution {
+    ArrayList<String> res =new ArrayList<>();
+    public ArrayList<String> Permutation(String str) {
+        if(str == null ||str.length()==0) return res;
+        char[] chars = str.toCharArray();
+        backtracking(chars, new boolean[chars.length],new StringBuilder(""));
+        return res;
+    }
+    public void backtracking(char[] chars, boolean[] hasused, StringBuilder s){
+        if(s.length() == chars.length) res.add(new String(s));
+        for(int i=0; i<chars.length; i++){
+            if(hasused[i]) continue;
+            if(i!=0 && chars[i]==chars[i-1] && !hasused[i-1]) continue;
+            hasused[i]=true;
+            s.append(chars[i]);
+            backtracking(chars, hasused,s);
+            s.deleteCharAt(s.length()-1);
+            hasused[i]=false;
+        }
+    }
+}
+```
+
+## 37. 序列化二叉树
+
+>  题目：请实现两个函数，分别用来序列化和反序列化二叉树。可以根据前序遍历的顺序来序列化二叉树。在遍历二叉树碰到null时，这些null序列化为一个特殊字符'$'。另外，节点的数值之间要用一个特殊字符','隔开。
+
+```java
+private String deserializeStr;
+
+public String Serialize(TreeNode root) {
+    if (root == null)
+        return "#";
+    return root.val + " " + Serialize(root.left) + " " + Serialize(root.right);
+}
+
+public TreeNode Deserialize(String str) {
+    deserializeStr = str;
+    return Deserialize();
+}
+
+private TreeNode Deserialize() {
+    if (deserializeStr.length() == 0)
+        return null;
+    int index = deserializeStr.indexOf(" ");
+    String node = index == -1 ? deserializeStr : deserializeStr.substring(0, index);
+    deserializeStr = index == -1 ? "" : deserializeStr.substring(index + 1);
+    if (node.equals("#"))
+        return null;
+    int val = Integer.valueOf(node);
+    TreeNode t = new TreeNode(val);
+    t.left = Deserialize();
+    t.right = Deserialize();
+    return t;
+}
+```
+
+## 36. 二叉搜索树和双向链表
+
+> 题目：输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+>
+> 解决思路：中序遍历
+>
+> [https://cyc2018.github.io/CS-Notes/#/notes/36.%20%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E4%B8%8E%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8](https://cyc2018.github.io/CS-Notes/#/notes/36. 二叉搜索树与双向链表)
+
+```java
+private TreeNode pre = null;
+private TreeNode head = null;
+
+public TreeNode Convert(TreeNode root) {
+    inOrder(root);
+    return head;
+}
+
+private void inOrder(TreeNode node) {
+    if (node == null)
+        return;
+    inOrder(node.left);
+    node.left = pre;
+    if (pre != null)
+        pre.right = node;
+    pre = node;
+    if (head == null)
+        head = node;
+    inOrder(node.right);
+}
+```
+
+## 35. 复杂链表的复制
+
