@@ -16,7 +16,7 @@ grep：正则匹配查找
 >
 > 任意字符串: .*
 
-![image-20200713101847885](images\image-20200713101847885.png)
+![image-20200713101847885](https://raw.githubusercontent.com/ketchum2019/ketchum2019.github.io/master/images/image-20200713101847885.png)
 
 sed：行编辑器 流处理编辑器（文本或管道输入）
 
@@ -56,3 +56,48 @@ awk：文本处理工具（统计制表可编程）
 ## 根据端口号查看进程
 
  netstat -nap | grep 进程pid
+
+## 查看进程是否启动
+
+通过ps -ef | grep xxx 查询xxx进程是否启动
+
+例如ps -ef | grep redis
+
+# Git常用命令
+
+## 一般工作流程如下：
+
+- 克隆 Git 资源作为工作目录。
+- 在克隆的资源上添加或修改文件。
+- 如果其他人修改了，你可以更新资源。
+- 在提交前查看修改。
+- 提交修改。
+- 在修改完成后，如果发现错误，可以撤回提交并再次修改并提交。
+
+> git init
+>
+> git clone
+>
+> git add
+>
+> git status -s
+>
+> git diff
+>
+> git commit
+>
+> git rm
+>
+> git branch (branchname) 创建分支
+>
+> git checkout (branchname) 切换分支
+>
+> git branch -d (branchname) 删除分支
+>
+> git log
+>
+> git tag -a v1.0  git标签
+>
+> git remote add [shortname] [url]  添加远程库
+>
+> 

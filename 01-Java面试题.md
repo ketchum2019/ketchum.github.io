@@ -241,6 +241,19 @@ JDK动态代理主要涉及两个类：`java.lang.reflect.Proxy` 和 `java.lang.
 
 ***
 
+# IO
+
+## NIO编程实现步骤
+
+1. 创建selector
+2. 创建ServerSocketChannel，并绑定监听端口
+3. 将channel设置为非阻塞模式
+4. 将channel注册到selector上，并监听连接时间
+5. 循环调用selector的select方法，检测就绪情况
+6. 调用SelectorKeys方法获取就绪channel集合
+7. 判断就绪事件种类，调用业务处理方法
+8. 根据业务需要决定是否再次注册监听时间，重复执行第三步操作
+
 # HashMap、ConcurrentHashMap
 
 ### HashMap和Hashtable的区别
@@ -255,13 +268,11 @@ JDK动态代理主要涉及两个类：`java.lang.reflect.Proxy` 和 `java.lang.
 
 3. **继承结构**
 
-   HashMap是集成
+   HashMap是继承MAP,
 
 4. **初始容量与扩容**
 
 5. **两者计算hash的方式不同**
-
-
 
 ### HaspMap添加操作和resize ###
 
@@ -837,10 +848,23 @@ TCP 粘包/分包的原因：应用程序写入的字节大小大于套接字发
 
 ## 设计模式
 
-手写单例模式
+手写单例模式(多线程单例模式)
 
-```
-
+```java
+class Single{ 
+    private static volatile Single s = null; 
+    private Single(){} 
+ 
+    public static  Single getInstance(){
+        if(null==s){
+            synchronized(Single.class){
+                if(null==s) 
+                    s = new Single(); 
+            }
+        }
+        return s; 
+    } 
+}
 ```
 
 

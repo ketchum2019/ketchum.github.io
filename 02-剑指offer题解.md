@@ -1,4 +1,5 @@
 # 剑指offer题解
+
 ## 68. 最低公共祖先
 
 ```java
@@ -106,7 +107,7 @@ public int Sum_Solution(int n) {
 
 >  题目：0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字。求出这个圆圈里剩下的最后一个数字。
 
-```
+```java
 //环形链表模拟圆圈
 import java.util.LinkedList;
 
@@ -129,7 +130,7 @@ public class Solution {
 }
 ```
 
-```
+```java
 //递推公式：f(n,m) = [f(n-1,m)+m]%n，n>1
 public class Solution {
     public int LastRemaining_Solution(int n, int m) {
@@ -151,7 +152,7 @@ public class Solution {
 >
 > https://www.nowcoder.com/practice/762836f4d43d43ca9deb273b3de8e1f4
 
-```
+```java
 import java.util.Arrays;
 
 public class Solution {
@@ -195,7 +196,7 @@ public class Solution {
 >
 > 给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}； 针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个： {[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， {2,3,[4,2,6],2,5,1}， {2,3,4,[2,6,2],5,1}， {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。
 
-```
+```java
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -234,7 +235,7 @@ public class Solution {
 >
 > 输入一个英文句子，翻转句子中单词的顺序，但单词内字符的顺序不变。为简单起见，标点符号和普通字母一样处理。例如输入字符串"I am a student."，则输出"student. a am I"
 
-```
+```java
 public class Solution {
     public String ReverseSentence(String str) {
         if(str ==null ||str.length() ==0) return str;
@@ -254,7 +255,7 @@ public class Solution {
 }
 ```
 
-```
+```java
 //解法二
 public class Solution {
     public String ReverseSentence(String str) {
@@ -298,7 +299,7 @@ public class Solution {
 >
 > 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
-```
+```java
 public class Solution {
     public String LeftRotateString(String str, int n) {
         if (str == null || str.length() == 0 || n < 1 || n >= str.length()) {
@@ -342,7 +343,7 @@ public class Solution {
 
 diff &= -diff 得到出 diff 最右侧不为 0 的位，也就是不存在重复的两个元素在位级表示上最右侧不同的那一位，利用这一位就可以将两个元素区分开来。
 
-```
+```java
 public void FindNumsAppearOnce(int[] nums, int num1[], int num2[]) {
     int diff = 0;
     for (int num : nums)
@@ -363,7 +364,7 @@ public void FindNumsAppearOnce(int[] nums, int num1[], int num2[]) {
 >
 > 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的一条路径，最长路径的长度为树的深度。
 
-```
+```java
 public class Solution {
     public int TreeDepth(TreeNode root) {
         if (root == null) {
@@ -378,7 +379,7 @@ public class Solution {
 >
 > 输入一棵二叉树，判断该二叉树是否是平衡二叉树。如果某二叉树中任意节点的左、右子树的深度相差不超过1，那么它就是一棵平衡二叉树。
 
-```
+```java
 public class Solution {
     private int mDepth;
     
@@ -414,7 +415,7 @@ public class Solution {
 
 中序遍历可以找出二叉搜索树的第k大节点
 
-```
+```java
 private TreeNode ret;
 private int cnt = 0;
 
@@ -440,7 +441,7 @@ private void inOrder(TreeNode root, int k) {
 >
 > 统计一个数字在排序数组中出现的次数。例如，输入排序数组{1, 2, 3, 3, 3, 3, 4, 5}和数字3，由于3在这个数组中出现了4次，因此输出4。
 
-```
+```java
 public int GetNumberOfK(int[] nums, int K) {
     int first = binarySearch(nums, K);
     int last = binarySearch(nums, K + 1);
@@ -466,7 +467,7 @@ private int binarySearch(int[] nums, int K) {
 >
 > 解题思路：二分查找：找到第一个元素和下标不等的数字
 
-```
+```java
 public int getMissingNumber(int[] numbers) {
     if (numbers == null || numbers.length == 0) {
         return -1;
@@ -494,7 +495,7 @@ public int getMissingNumber(int[] numbers) {
 
 ## 52. 两个链表的第一个公共节点
 
-```
+```java
 public class Solution {
     public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
         if (pHead1 == null || pHead2 == null) {
@@ -1008,3 +1009,387 @@ private void inOrder(TreeNode node) {
 
 ## 35. 复杂链表的复制
 
+> 题目：输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。
+>
+> 第一步，在每个节点的后面插入复制的节点。
+>
+> 第二步，对复制节点的 random 链接进行赋值。
+>
+> 第三步，拆分
+
+```java
+public RandomListNode Clone(RandomListNode pHead) {
+    if (pHead == null)
+        return null;
+    // 插入新节点
+    RandomListNode cur = pHead;
+    while (cur != null) {
+        RandomListNode clone = new RandomListNode(cur.label);
+        clone.next = cur.next;
+        cur.next = clone;
+        cur = clone.next;
+    }
+    // 建立 random 链接
+    cur = pHead;
+    while (cur != null) {
+        RandomListNode clone = cur.next;
+        if (cur.random != null)
+            clone.random = cur.random.next;
+        cur = clone.next;
+    }
+    // 拆分
+    cur = pHead;
+    RandomListNode pCloneHead = pHead.next;
+    while (cur.next != null) {
+        RandomListNode next = cur.next;
+        cur.next = next.next;
+        cur = next;
+    }
+    return pCloneHead;
+}
+
+```
+
+## 34. 二叉树中和为某一值的路径
+
+> 题目：输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
+
+```java
+private ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
+
+public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+    backtracking(root, target, new ArrayList<>());
+    return ret;
+}
+
+private void backtracking(TreeNode node, int target, ArrayList<Integer> path) {
+    if (node == null)
+        return;
+    path.add(node.val);
+    target -= node.val;
+    if (target == 0 && node.left == null && node.right == null) {
+        ret.add(new ArrayList<>(path));
+    } else {
+        backtracking(node.left, target, path);
+        backtracking(node.right, target, path);
+    }
+    path.remove(path.size() - 1);
+}
+
+```
+
+## 33. 二叉搜索树的后序遍历序列
+
+> 题目：输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+
+```java
+public boolean VerifySquenceOfBST(int[] sequence) {
+    if (sequence == null || sequence.length == 0)
+        return false;
+    return verify(sequence, 0, sequence.length - 1);
+}
+
+private boolean verify(int[] sequence, int first, int last) {
+    if (last - first <= 1)
+        return true;
+    int rootVal = sequence[last];
+    int cutIndex = first;
+    while (cutIndex < last && sequence[cutIndex] <= rootVal)
+        cutIndex++;
+    for (int i = cutIndex; i < last; i++)
+        if (sequence[i] < rootVal)
+            return false;
+    return verify(sequence, first, cutIndex - 1) && verify(sequence, cutIndex, last - 1);
+}
+```
+
+## 32.1 从上到下打印二叉树
+
+> 题目一：不分行从上到下打印二叉树
+>
+> 从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+
+```java
+public class Solution {
+    public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        LinkedList<TreeNode> nodeList = new LinkedList<>();
+        nodeList.add(root);
+        while (!nodeList.isEmpty()) {
+            TreeNode node = nodeList.removeFirst();
+            result.add(node.val);
+            if (node.left != null) {
+                nodeList.add(node.left);
+            }
+            if (node.right != null) {
+                nodeList.add(node.right);
+            }
+        }
+        return result;
+    }
+}
+```
+
+## 32.3 之字形打印二叉树
+
+> 题目三：之字形打印二叉树
+>
+> 请实现一个函数按照之字形打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右至左的顺序打印，第三行按照从左到右的顺序打印，其他行以此类推。
+
+```java
+public ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+    ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
+    Queue<TreeNode> queue = new LinkedList<>();
+    queue.add(pRoot);
+    boolean reverse = false;
+    while (!queue.isEmpty()) {
+        ArrayList<Integer> list = new ArrayList<>();
+        int cnt = queue.size();
+        while (cnt-- > 0) {
+            TreeNode node = queue.poll();
+            if (node == null)
+                continue;
+            list.add(node.val);
+            queue.add(node.left);
+            queue.add(node.right);
+        }
+        if (reverse)
+            Collections.reverse(list);
+        reverse = !reverse;
+        if (list.size() != 0)
+            ret.add(list);
+    }
+    return ret;
+}
+```
+
+## 31. 栈的压入、弹出序列
+
+> 题目：输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）
+
+```java
+public boolean IsPopOrder(int[] pushSequence, int[] popSequence) {
+    int n = pushSequence.length;
+    Stack<Integer> stack = new Stack<>();
+    for (int pushIndex = 0, popIndex = 0; pushIndex < n; pushIndex++) {
+        stack.push(pushSequence[pushIndex]);
+        while (popIndex < n && !stack.isEmpty() 
+                && stack.peek() == popSequence[popIndex]) {
+            stack.pop();
+            popIndex++;
+        }
+    }
+    return stack.isEmpty();
+}
+```
+
+## 30. 包含min函数的栈
+
+```java
+private Stack<Integer> dataStack = new Stack<>();
+private Stack<Integer> minStack = new Stack<>();
+
+public void push(int node) {
+    dataStack.push(node);
+    minStack.push(minStack.isEmpty() ? node : Math.min(minStack.peek(), node));
+}
+
+public void pop() {
+    dataStack.pop();
+    minStack.pop();
+}
+
+public int top() {
+    return dataStack.peek();
+}
+
+public int min() {
+    return minStack.peek();
+}
+```
+
+## 29. 顺时针打印矩阵
+
+> 题目：输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下4 X 4矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
+
+```java
+public ArrayList<Integer> printMatrix(int[][] matrix) {
+    ArrayList<Integer> ret = new ArrayList<>();
+    int r1 = 0, r2 = matrix.length - 1, c1 = 0, c2 = matrix[0].length - 1;
+    while (r1 <= r2 && c1 <= c2) {
+        for (int i = c1; i <= c2; i++)
+            ret.add(matrix[r1][i]);
+        for (int i = r1 + 1; i <= r2; i++)
+            ret.add(matrix[i][c2]);
+        if (r1 != r2)
+            for (int i = c2 - 1; i >= c1; i--)
+                ret.add(matrix[r2][i]);
+        if (c1 != c2)
+            for (int i = r2 - 1; i > r1; i--)
+                ret.add(matrix[i][c1]);
+        r1++; r2--; c1++; c2--;
+    }
+    return ret;
+}
+```
+
+## 28. 对称的二叉树
+
+> 题目：请实现一个函数，用来判断一颗二叉树是不是对称的。注意，如果一个二叉树同此二叉树的镜像是同样的，定义其为对称的。
+
+```java
+boolean isSymmetrical(TreeNode pRoot) {
+    if (pRoot == null)
+        return true;
+    return isSymmetrical(pRoot.left, pRoot.right);
+}
+
+boolean isSymmetrical(TreeNode t1, TreeNode t2) {
+    if (t1 == null && t2 == null)
+        return true;
+    if (t1 == null || t2 == null)
+        return false;
+    if (t1.val != t2.val)
+        return false;
+    return isSymmetrical(t1.left, t2.right) && isSymmetrical(t1.right, t2.left);
+}
+```
+
+## 27. 二叉树的镜像
+
+> 题目：操作给定的二叉树，将其变换为源二叉树的镜像。
+
+```java
+public void Mirror(TreeNode root) {
+    if (root == null)
+        return;
+    swap(root);
+    Mirror(root.left);
+    Mirror(root.right);
+}
+private void swap(TreeNode root) {
+    TreeNode t = root.left;
+    root.left = root.right;
+    root.right = t;
+}
+```
+
+## 26. 树的子结构
+
+> 题目：输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+
+```java
+public boolean HasSubtree(TreeNode root1, TreeNode root2) {
+    if (root1 == null || root2 == null)
+        return false;
+    return isSubtreeWithRoot(root1, root2) || HasSubtree(root1.left, root2) || HasSubtree(root1.right, root2);
+}
+
+private boolean isSubtreeWithRoot(TreeNode root1, TreeNode root2) {
+    if (root2 == null)
+        return true;
+    if (root1 == null)
+        return false;
+    if (root1.val != root2.val)
+        return false;
+    return isSubtreeWithRoot(root1.left, root2.left) &&
+    	   isSubtreeWithRoot(root1.right, root2.right);
+}
+
+```
+
+## 25. 合并两个排序列表
+
+```java
+public ListNode Merge(ListNode list1, ListNode list2) {
+    if (list1 == null)
+        return list2;
+    if (list2 == null)
+        return list1;
+    if (list1.val <= list2.val) {
+        list1.next = Merge(list1.next, list2);
+        return list1;
+    } else {
+        list2.next = Merge(list1, list2.next);
+        return list2;
+    }
+}
+```
+
+## 24. 反转链表
+
+```java
+public ListNode ReverseList(ListNode head) {
+    ListNode newList = new ListNode(-1);
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = newList.next;
+        newList.next = head;
+        head = next;
+    }
+    return newList.next;
+}
+```
+
+## 23. 链表中环的入口节点
+
+
+
+```java
+public class Solution {
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode meetingNode = meetingNode(pHead);
+        if (meetingNode == null) {
+            return null;
+        }
+        // 得到环中节点的数目
+        ListNode cur = meetingNode.next;
+        int nodesInLoop = 1;
+        while (cur != meetingNode) {
+            nodesInLoop++;
+            cur = cur.next;
+        }
+        ListNode behind = cur = pHead;
+        // 先移动cur，次数为环中节点的数目
+        while (nodesInLoop-- > 0) {
+            cur = cur.next;
+        }
+        // 再移动behind和cur，相遇时即为入口节点
+        while (behind != cur) {
+            behind = behind.next;
+            cur = cur.next;
+        }
+        return behind;
+    }
+    
+    private ListNode meetingNode(ListNode pHead) {
+        // 在链表中存在环时找到一快一慢两个指针相遇的节点，无环返回null
+        ListNode cur = pHead.next.next, behind = pHead;
+        while (cur != null) {
+            if (cur == behind) {
+                return cur;
+            }
+            if (cur.next != null) {
+                cur = cur.next.next;
+            } else {
+                return null;
+            }
+            behind = behind.next;
+        }
+        return null;
+    }
+}
+```
+
+
+
+
+
+![image-20200728193111655](D:\github\ketchum2019.github.io\images\排序.png)
