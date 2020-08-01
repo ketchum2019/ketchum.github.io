@@ -1,5 +1,17 @@
 # Spring #
+## IOC
+
+IOC也叫控制反转，将对象间的依赖关系交给Spring容器，使用配置文件来创建所依赖的对象，由主动创建对象改为了被动方式，实现解耦合。可以通过注解@Autowired和@Resource来注入对象，被注入的对象必须被下边的四个注解之一标注：
+
+- @Controller
+- @Service
+- @Repository
+- @Component
+
+在Spring配置文件中配置 <context:annotation-config/>元素开启注解。还有一个概念是DI（依赖注入），和控制反转是同一个概念的不同角度的描述，即应用程序在运行时依赖IOC容器来动态注入对象需要的外部资源（对象等）。
+
 ## 什么是 Spring beans? ##
+
 Spring beans 是那些形成 Spring 应用的主干的 java 对象。它们被 Spring IOC 容器初始化，装配，和管理。这些 beans 通过容器中配置的元数据创建。比如，以 XML 文件中<bean/> 的形式定义。 Spring 框架定义的 beans 都是单例 beans。
 
 

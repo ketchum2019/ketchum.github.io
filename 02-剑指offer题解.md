@@ -1,5 +1,7 @@
 # 剑指offer题解
 
+![image-20200728193111655](https://raw.githubusercontent.com/ketchum2019/ketchum2019.github.io/master/images/排序.png)
+
 ## 68. 最低公共祖先
 
 ```java
@@ -47,7 +49,7 @@ public class Solution {
 
 > 题目：给定一个数组A[0,1,...,n-1]，请构建一个数组B[0,1,...,n-1]，其中B中的元素B[i]=A[0]×A[1]×...×A[i-1]×A[i+1]×...×A[n-1]。不能使用除法。
 
-```
+```java
 public class Solution {
     public int[] multiply(int[] A) {
         if (A == null || A.length < 2) {
@@ -71,7 +73,7 @@ public class Solution {
 
 > 写一个函数，求两个整数之和，要求在函数体内不得使用+、-、*、/四则运算符号。
 
-```
+```java
 public class Solution {
     public int Add(int num1,int num2) {
         int sum = num1;
@@ -1336,6 +1338,24 @@ public ListNode ReverseList(ListNode head) {
 
 ## 23. 链表中环的入口节点
 
+```java
+public ListNode EntryNodeOfLoop(ListNode pHead) {
+    if (pHead == null || pHead.next == null)
+        return null;
+    ListNode slow = pHead, fast = pHead;
+    do {
+        fast = fast.next.next;
+        slow = slow.next;
+    } while (slow != fast);
+    fast = pHead;
+    while (slow != fast) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    return slow;
+}
+```
+
 
 
 ```java
@@ -1388,8 +1408,427 @@ public class Solution {
 }
 ```
 
+## 22. 链表中倒数第k个节点
 
+```java
+public class Solution {
+    public ListNode FindKthToTail(ListNode head, int k) {
+        if (head == null || k < 1) {
+            return null;
+        }
+        ListNode cur = head;
+        while (k-- > 1) {
+            if (cur.next == null) {
+                return null;
+            }
+            cur = cur.next;
+        }
+        ListNode behind = head;
+        while (cur.next != null) {
+            behind = behind.next;
+            cur = cur.next;
+        }
+        return behind;
+    }
+}
+```
 
+## 21. 调整数组顺序使奇数位于偶数前面
 
+> 题目：输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分。
+>
+> 扩展：输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，**并保证奇数和奇数，偶数和偶数之间的相对位置不变**。
 
-![image-20200728193111655](D:\github\ketchum2019.github.io\images\排序.png)
+```java
+public class Solution {
+    public void reOrderArray(int [] array) {
+        int n = array.length;
+        int[] aux = new int[n];
+        int i = 0;
+        for (int j = 0; j < n; j++) {
+            if ((array[j] & 1) == 1) {
+                if (i != j) {
+                    array[i] = array[j];
+                }
+                i++;
+            } else {
+                aux[j - i] = array[j];
+            }
+        }
+        for (int j = i; j < n; j++) {
+            array[j] = aux[j - i];
+        }
+    }
+}
+```
+
+## 20. 表示数值的字符串
+
+```java
+public class Solution {
+    public boolean isNumeric(char[] str) {
+        if (str == null || str.length == 0) {
+            return false;
+        }
+        boolean hasDot = false, hasE = false;
+        for (int i = 0; i < str.length; i++) {
+            if (str[i] == '.') {
+                if (hasDot) {
+                    // 已经出现过'.'
+                    return false;
+                } else {
+                    hasDot = true;
+                }
+            } else if (isE(str[i])) {
+                if (hasE) {
+                    // 已经出现过'E'
+                    return false;
+                }
+                // 'E'后面不会再出现'E'和'.'
+                hasE = true;
+                hasDot = true;
+            } else if (isPlusMinus(str[i])) {
+                if (i != 0 && (!hasE || !isE(str[i - 1]))) {
+                    // '+''-'不是第一个且前面不是'E'
+                    return false;
+                }
+            } else if (!isNumber(str[i])) {
+                return false;
+            }
+        }
+        // 最后一个不是'E'
+        return !isE(str[str.length - 1]);
+    }
+    
+    private boolean isE(char c) {
+        return c == 'E' || c == 'e';
+    }
+    
+    private boolean isPlusMinus(char c) {
+        return c == '+' || c == '-';
+    }
+    
+    private boolean isNumber(char c) {
+        return c >= '0' && c <= '9';
+    }
+}
+```
+
+使用正则表达式
+
+```
+[]  ： 字符集合
+()  ： 分组
+?   ： 重复 0 ~ 1 次
++   ： 重复 1 ~ n 次
+*   ： 重复 0 ~ n 次
+.   ： 任意字符
+\\. ： 转义后的 .
+\\d ： 数字
+```
+
+```java
+public boolean isNumeric(char[] str) {
+    if (str == null || str.length == 0)
+        return false;
+    return new String(str).matches("[+-]?\\d*(\\.\\d+)?([eE][+-]?\\d+)?");
+}
+```
+
+## 19. 正则表达式匹配
+
+> 题目：请实现一个函数用来匹配包括'.'和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次（包含0次）。 在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但是与"aa.a"和"ab*a"均不匹配
+
+```java
+public class Solution {
+    public boolean match(char[] str, char[] pattern){
+        if (str == null || pattern == null) {
+            return false;
+        }
+        return match(str, pattern, 0, 0);
+    }
+    
+    private boolean match(char[] str, char[] pattern, int strPos, int patternPos) {
+        if (strPos == str.length && patternPos == pattern.length) {
+            return true;
+        } else if (patternPos == pattern.length) {
+            return false;
+        }
+        if (patternPos + 1 < pattern.length && pattern[patternPos + 1] == '*') {
+            if (strPos < str.length && (pattern[patternPos] == '.' || pattern[patternPos] == str[strPos])) {
+                return match(str, pattern, strPos, patternPos + 2) // 匹配0个字符
+                    || match(str, pattern, strPos + 1, patternPos + 2) // 匹配1个字符
+                    || match(str, pattern, strPos + 1, patternPos); // 匹配多个字符
+            } else {
+                return match(str, pattern, strPos, patternPos + 2); // 匹配0个字符
+            }
+        }
+        if (strPos < str.length && (pattern[patternPos] == '.' || pattern[patternPos] == str[strPos])) {
+            return match(str, pattern, strPos + 1, patternPos + 1);
+        }
+        return false;
+    }
+}
+```
+
+## 18.1 删除链表的节点
+
+> 题目一：在O(1)时间内删除链表节点。
+> 给定单向链表的头指针和一个节点指针，定义一个函数在O(1)时间内删除该节点。
+
+```java
+public ListNode deleteNode(ListNode head, ListNode tobeDelete) {
+    if (head == null || tobeDelete == null)
+        return null;
+    if (tobeDelete.next != null) {
+        // 要删除的节点不是尾节点
+        ListNode next = tobeDelete.next;
+        tobeDelete.val = next.val;
+        tobeDelete.next = next.next;
+    } else {
+        if (head == tobeDelete)
+             // 只有一个节点
+            head = null;
+        else {
+            ListNode cur = head;
+            while (cur.next != tobeDelete)
+                cur = cur.next;
+            cur.next = null;
+        }
+    }
+    return head;
+}
+```
+
+## 18.2 删除链表中重复的节点。
+
+> 在一个排序的链表中，存在重复的结点，请删除该链表中重复的结点，重复的结点不保留，返回链表头指针。 例如，链表1->2->3->3->4->4->5 处理后为 1->2->5
+
+```java
+public ListNode deleteDuplication(ListNode pHead) {
+    if (pHead == null || pHead.next == null)
+        return pHead;
+    ListNode next = pHead.next;
+    if (pHead.val == next.val) {
+        while (next != null && pHead.val == next.val)
+            next = next.next;
+        return deleteDuplication(next);
+    } else {
+        pHead.next = deleteDuplication(pHead.next);
+        return pHead;
+    }
+}
+```
+
+```java
+public class Solution {
+    public ListNode deleteDuplication(ListNode pHead) {
+        ListNode pre = null, node = pHead;
+        while (node != null) {
+            boolean needDelete = false;
+            if (node.next != null && node.next.val == node.val) {
+                needDelete = true;
+            }
+            if (needDelete) {
+                int value = node.val;
+                while (node != null && node.val == value) {
+                    node = node.next;
+                }
+                if (pre == null) {
+                    pHead = node;
+                } else {
+                    pre.next = node;
+                }
+            } else {
+                pre = node;
+                node = node.next;
+            }
+        }
+        return pHead;
+    }
+}
+```
+
+## 17. 打印从1到最大的n位数
+
+## 16. 数值的整数次方
+
+> 题目：给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
+
+```java
+public double Power(double base, int exponent) {
+    if (exponent == 0)
+        return 1;
+    if (exponent == 1)
+        return base;
+    boolean isNegative = false;
+    if (exponent < 0) {
+        exponent = -exponent;
+        isNegative = true;
+    }
+    double pow = Power(base * base, exponent / 2);
+    if (exponent % 2 != 0)
+        pow = pow * base;
+    return isNegative ? 1 / pow : pow;
+}
+```
+
+```java
+public class Solution {
+    public double Power(double base, int exponent) {
+        if (base == 0) {
+            return 0;
+        }
+        if (exponent == 0) {
+            return 1;
+        }
+        boolean negative = exponent < 0;
+        if (negative) {
+            exponent = -exponent;
+        }
+        double result = base;
+        while (--exponent > 0) {
+            result *= base;
+        }
+        return negative ? 1 / result : result;
+    }
+}
+```
+
+时间复杂度：O(n)。空间复杂度：O(1)。
+
+## 15. 二进制中1的个数
+
+> 题目：输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+
+```java
+public class Solution {
+    public int NumberOf1(int n) {
+        int count = 0, flag = 1;
+        while (flag > 0) {
+            if ((n & flag) > 0) {
+                count++;
+            }
+            flag <<= 1;
+        }
+        // 负数的最高位是1
+        return n < 0 ? count + 1 : count;
+    }
+}
+```
+
+```java
+public class Solution {
+    public int NumberOf1(int n) {
+        int count = 0;
+        while (n != 0) {
+            count++;
+            // 把最右边的1变成0
+            n = (n - 1) & n;
+        }
+        // 负数的最高位是1
+        return n < 0 ? count + 1 : count;
+    }
+}
+```
+
+## 14. 剪绳子
+
+> 题目：给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n>1并且m>1），每段绳子的长度记为k[0],k[1],···,k[m]。请问k[0]×k[1]×···×k[m]可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+```java
+public int integerBreak(int n) {
+    int[] dp = new int[n + 1];
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++)
+        for (int j = 1; j < i; j++)
+            dp[i] = Math.max(dp[i], Math.max(j * (i - j), dp[j] * (i - j)));
+    return dp[n];
+}
+```
+
+## 13. 机器人的运动范围
+
+> 题目：地上有一个m行和n列的方格。一个机器人从坐标0,0的格子开始移动，每一次只能向左，右，上，下四个方向移动一格，但是不能进入行坐标和列坐标的数位之和大于k的格子。 例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。但是，它不能进入方格（35,38），因为3+5+3+8 = 19。请问该机器人能够达到多少个格子？
+
+```java
+public class Solution {
+    public int movingCount(int threshold, int rows, int cols) {
+        if (threshold < 1 || rows < 1 || cols < 1) {
+            return 0;
+        }
+        boolean[][] visited = new boolean[rows][cols];
+        return movingCount(threshold, rows, cols, 0, 0, visited);
+    }
+    
+    private int movingCount(int threshold, int rows, int cols, int row, int col, boolean[][] visited) {
+        int count = 0;
+        if (row >= 0 && row < rows && col >= 0 && col < cols && !visited[row][col]
+            && sum(row) + sum(col) <= threshold) {
+            visited[row][col] = true;
+            count = 1 + movingCount(threshold, rows, cols, row - 1, col, visited)
+                + movingCount(threshold, rows, cols, row + 1, col, visited)
+                + movingCount(threshold, rows, cols, row, col + 1, visited)
+                + movingCount(threshold, rows, cols, row, col - 1, visited);
+        }
+        return count;
+    }
+    
+    private int sum(int number) {
+        int sum = 0;
+        while (number > 0) {
+            sum += number % 10;
+            number /= 10;
+        }
+        return sum;
+    }
+}
+```
+
+## 12. 矩阵中的路径
+
+> 题目：请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一个格子开始，每一步可以在矩阵中向左，向右，向上，向下移动一个格子。如果一条路径经过了矩阵中的某一个格子，则之后不能再次进入这个格子。 例如 a b c e s f c s a d e e 这样的3 X 4 矩阵中包含一条字符串"bcced"的路径，但是矩阵中不包含"abcb"路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入该格子。
+
+```java
+public class Solution {
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
+        if (matrix == null || rows < 1 || cols < 1 || str == null) {
+            return false;
+        }
+        boolean[][] visited = new boolean[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (hasPath(matrix, rows, cols, row, col, str, 0, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean hasPath(char[] matrix, int rows, int cols, int row, int col
+                            , char[] str, int index, boolean[][] visited) {
+        if (index == str.length) {
+            return true;
+        }
+        if (row >= 0 && row < rows && col >= 0 && col < cols && !visited[row][col]
+            && matrix[cols * row + col] == str[index]) {
+            visited[row][col] = true;
+            if (hasPath(matrix, rows, cols, row - 1, col, str, index + 1, visited)
+               || hasPath(matrix, rows, cols, row + 1, col, str, index + 1, visited)
+               || hasPath(matrix, rows, cols, row, col - 1, str, index + 1, visited)
+               || hasPath(matrix, rows, cols, row, col + 1, str, index + 1, visited)) 
+            {
+                return true;
+            }
+            visited[row][col] = false;
+        }
+        return false;
+    }
+}
+```
+
+## 11.  旋转数组的最小数字
+
+> 题目：把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。 NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+
