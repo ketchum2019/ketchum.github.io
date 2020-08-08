@@ -1832,3 +1832,264 @@ public class Solution {
 
 > 题目：把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。 NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
 
+```java
+import java.util.ArrayList;
+public class Solution {
+    public int minNumberInRotateArray(int [] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int start = 0, end = array.length - 1, mid;
+        while (array[start] >= array[end]) {
+            if (start + 1 == end) {
+                return array[end];
+            }
+            mid = (start + end) / 2;
+            if (array[start] == array[mid] && array[end] == array[mid]) {
+                return minNumberInOrder(array, start, end);
+            }
+            if (array[mid] >= array[start]) {
+                start = mid;
+            } else if (array[mid] <= array[end]) {
+                end = mid;
+            }
+        }
+        return array[0];
+    }
+    
+    private int minNumberInOrder(int[] array, int start, int end) {
+        int min = array[start];
+        for (int i = start + 1; i <= end; i++) {
+            if (array[i] < min) {
+                min = array[i];
+            }
+        }
+        return min;
+    }
+}
+```
+
+## 10.1 斐波那契数列
+
+```java
+public int Fibonacci(int n) {
+    if (n <= 1)
+        return n;
+    int pre2 = 0, pre1 = 1;
+    int fib = 0;
+    for (int i = 2; i <= n; i++) {
+        fib = pre2 + pre1;
+        pre2 = pre1;
+        pre1 = fib;
+    }
+    return fib;
+}
+```
+
+## 10.2 青蛙跳台阶
+
+```java
+public int JumpFloor(int n) {
+    if (n <= 2)
+        return n;
+    int pre2 = 1, pre1 = 2;
+    int result = 0;
+    for (int i = 2; i < n; i++) {
+        result = pre2 + pre1;
+        pre2 = pre1;
+        pre1 = result;
+    }
+    return result;
+}
+```
+
+## 10.3 变态跳台阶
+
+> 一只青蛙一次可以跳上 1 级台阶，也可以跳上 2 级... 它也可以跳上 n 级。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+
+```java
+public int JumpFloorII(int target) {
+    return (int) Math.pow(2, target - 1);
+}
+```
+
+```java
+public int JumpFloorII(int target) {
+    int[] dp = new int[target];
+    Arrays.fill(dp, 1);
+    for (int i = 1; i < target; i++)
+        for (int j = 0; j < i; j++)
+            dp[i] += dp[j];
+    return dp[target - 1];
+}
+```
+
+## 9.用两个栈实现队列
+
+```java
+Stack<Integer> in = new Stack<Integer>();
+Stack<Integer> out = new Stack<Integer>();
+
+public void push(int node) {
+    in.push(node);
+}
+
+public int pop() throws Exception {
+    if (out.isEmpty())
+        while (!in.isEmpty())
+            out.push(in.pop());
+
+    if (out.isEmpty())
+        throw new Exception("queue is empty");
+
+    return out.pop();
+}
+```
+
+## 8. 二叉树的下一个节点
+
+> 给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回 。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。
+>
+> 解题思路：如果一个节点的右子树不为空，那么该节点的下一个节点是右子树的最左节点；否则，向上找第一个左链接指向的树包含该节点的祖先节点。
+
+```java
+public TreeLinkNode GetNext(TreeLinkNode pNode) {
+    if (pNode.right != null) {
+        TreeLinkNode node = pNode.right;
+        while (node.left != null)
+            node = node.left;
+        return node;
+    } else {
+        while (pNode.next != null) {
+            TreeLinkNode parent = pNode.next;
+            if (parent.left == pNode)
+                return parent;
+            pNode = pNode.next;
+        }
+    }
+    return null;
+}
+```
+
+## 7. 重建二叉树
+
+> 题目：输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回
+
+```java
+public class Solution {
+    public TreeNode reConstructBinaryTree(int[] pre, int[] in) {
+        if (pre == null || pre.length == 0 || in == null || in.length == 0 || pre.length != in.length) {
+            return null;
+        }
+        return construct(pre, in, 0, pre.length - 1, 0, in.length - 1);
+    }
+    
+    private TreeNode construct(int[] pre, int[] in, int preStart, int preEnd, int inStart, int inEnd) {
+        if (preStart > preEnd || inStart > inEnd) {
+            return null;
+        }
+        TreeNode node = new TreeNode(pre[preStart]);
+        int inMid = inStart;
+        while (in[inMid] != pre[preStart]) {
+            inMid++;
+        }
+        int delta = inMid - inStart;
+        node.left = construct(pre, in, preStart + 1, preStart + delta, inStart, inMid - 1);
+        node.right = construct(pre, in, preStart + delta + 1, preEnd, inMid + 1, inEnd);
+        return node;
+    }
+}
+```
+
+## 6. 从尾到头打印链表
+
+递归
+
+```java
+public class Solution {
+    public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (listNode == null) {
+            return result;
+        }
+        addList(listNode, result);
+        return result;
+    }
+    
+    private void addList(ListNode listNode, ArrayList<Integer> list) {
+        if (listNode != null) {
+            addList(listNode.next, list);
+            list.add(listNode.val);
+        } 
+    }
+}
+```
+
+
+
+## 5. 替换空格
+
+```java
+public class Solution {
+    public String replaceSpace(StringBuffer str) {
+        if (str == null || str.length() == 0) {
+            return str.toString();
+        }
+        int blanks = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == ' ') {
+                blanks++;
+            }
+        }
+        if (blanks == 0) {
+            return str.toString();
+        }
+        int size = str.length() + 2 * blanks;
+        char[] chars = new char[size];
+        for (int i = str.length() - 1, j = size - 1; i >= 0; i--) {
+            if (str.charAt(i) == ' ') {
+                chars[j--] = '0';
+                chars[j--] = '2';
+                chars[j--] = '%';
+            } else {
+                chars[j--] = str.charAt(i);
+            }
+        }
+        return new String(chars);
+    }
+}
+```
+
+## 4. 二维数组中的查找
+
+> 给定一个二维数组，其每一行从左到右递增排序，从上到下也是递增排序。给定一个数，判断这个数是否在该二维数组中。
+
+```java
+public class Solution {
+    public boolean Find(int target, int [][] array) {
+        if (array == null || array.length == 0 || array[0] == null || array[0].length == 0) {
+            return false;
+        }
+        int row = 0, column = array[0].length - 1;
+        while (row < array.length && column >= 0) {
+            if (array[row][column] == target) {
+                return true;
+            } else if (array[row][column] > target) {
+                column--;
+            } else {
+                row++;
+            }
+        }
+        return false;
+    }
+}
+```
+
+## 3. 数组中重复的数字
+
+> 在一个长度为n的数组里的所有数字都在0到n-1的范围内。 数组中某些数字是重复的，但不知道有几个数字是重复的。也不知道每个数字重复几次。请找出数组中任意一个重复的数字。 例如，如果输入长度为7的数组{2,3,1,0,2,5,3}，那么对应的输出是第一个重复的数字2。
+
+```
+
+```
+
