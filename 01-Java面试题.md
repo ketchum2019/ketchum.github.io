@@ -287,7 +287,11 @@ Constructor c=clazz.getDeclaredConstructor(String.class,String.class,int.class);
 Person p1=(Person) c.newInstance("李四","男",20); 
 ```
 
+## Java中的值传递和引用传递可以解释下吗？
 
+1. **值传递，**意味着传递了对象的一个副本，即使副本被改变，也不会影响源对象。
+
+2. **引用传递，**意味着传递的并不是实际的对象，而是对象的引用。因此，外部对引用对象的改变会反映到所有的对象上。
 
 ***
 
@@ -318,13 +322,21 @@ Person p1=(Person) c.newInstance("李四","男",20);
 
 3. **继承结构**
 
-   HashMap是继承MAP,
+   HashMap是继承MAP, Hashtable实现了map接口和实现Dictionary抽象类
 
 4. **初始容量与扩容**
+
+   hashmap初始容量为16，Hashtable初始容量为11
+
+   HashMap扩容为2倍，Hashtable扩容为翻倍+1
 
 5. **两者计算hash的方式不同**
 
 ### HaspMap添加操作和resize ###
+
+### HashMap的长度为什么是2的幂次方？
+
+我们将一个键值对插入HashMap中，通过**将Key的hash值与length-1进行&运算**，实现了当前Key的定位，2的幂次方可以减少冲突（碰撞）的次数，提高HashMap查询效率**如果length为2的幂次方**，则length-1 转化为二进制必定是11111……的形式，在与h的二进制与操作效率会非常的快，而且空间不浪费**如果length不是2的幂次方**，比如length为15，则length-1为14，对应的二进制为1110，在与h与操作，最后一位都为0，而0001，0011，0101，1001，1011，0111，1101这几个位置永远都不能存放元素了，空间浪费相当大，更糟的是这种情况中，数组可以使用的位置比数组长度小了很多，这意味着进一步增加了碰撞的几率，减慢了查询的效率！这样就会造成空间的浪费。
 
 ### HaspMap为什么使用数组+链表？用LinkedList代替数组可以吗？
 
@@ -422,6 +434,16 @@ while(it.hasNext()){
 ```
 
 Iterator 和entryset所耗时间较短，keySet时间较长
+
+### TreeMap有哪些特性？
+
+**TreeMap底层使用**红黑树**实现，TreeMap中存储的键值对**按照键来排序。如果Key存入的是字符串等类型，那么会按照字典默认顺序排序如果传入的是自定义引用类型，比如说User，那么该对象必须实现Comparable接口，并且覆盖其compareTo方法；或者在创建TreeMap的时候，我们必须指定使用的比较器。如下所示：
+
+### Comparable接口和Comparator接口有哪些区别呢？
+
+**Comparable**实现比较简单，但是当需要重新定义比较规则的时候，**必须修改源代码**，即修改User类里边的compareTo方法
+
+**Comparator**接口不需要修改源代码，只需要在创建TreeMap的时候**重新传入一个具有指定规则的比较器**即可
 
 # JVM面试题 #
 
