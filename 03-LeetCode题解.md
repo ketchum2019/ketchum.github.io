@@ -201,9 +201,248 @@ private boolean isEqual(ListNode l1, ListNode l2) {
 }
 ```
 
+## 树
+
+### 1. 树的高度
+
+```java
+public int maxDepth(TreeNode root) {
+    if (root == null) return 0;
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+}
+```
+
+### 2. 平衡树
+
+```java
+private boolean result = true;
+
+public boolean isBalanced(TreeNode root) {
+    maxDepth(root);
+    return result;
+}
+
+public int maxDepth(TreeNode root) {
+    if (root == null) return 0;
+    int l = maxDepth(root.left);
+    int r = maxDepth(root.right);
+    if (Math.abs(l - r) > 1) result = false;
+    return 1 + Math.max(l, r);
+}
+```
+
+### 3. 两节点的最长路径
+
+```java
+private int max = 0;
+
+public int diameterOfBinaryTree(TreeNode root) {
+    depth(root);
+    return max;
+}
+
+private int depth(TreeNode root) {
+    if (root == null) return 0;
+    int leftDepth = depth(root.left);
+    int rightDepth = depth(root.right);
+    max = Math.max(max, leftDepth + rightDepth);
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+```
+
+### 4. 翻转树
+
+```java
+public TreeNode invertTree(TreeNode root) {
+    if (root == null) return null;
+    TreeNode left = root.left;  
+    root.left = invertTree(root.right);
+    root.right = invertTree(left);
+    return root;
+}
+```
+
+### 5. 合并二叉树
+
+> 给定两个二叉树，想象当你将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。
+>
+> 你需要将他们合并为一个新的二叉树。合并的规则是如果两个节点重叠，那么将他们的值相加作为节点合并后的新值，否则不为 NULL 的节点将直接作为新二叉树的节点。
+
+```java
+public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+    if (t1 == null && t2 == null) return null;
+    if (t1 == null) return t2;
+    if (t2 == null) return t1;
+    TreeNode root = new TreeNode(t1.val + t2.val);
+    root.left = mergeTrees(t1.left, t2.left);
+    root.right = mergeTrees(t1.right, t2.right);
+    return root;
+}
+```
+
+### 6. 判断路径和是否等于一个数
+
+路径和定义为从 root 到 leaf 的所有节点的和。
+
+```java
+public boolean hasPathSum(TreeNode root, int sum) {
+    if (root == null) return false;
+    if (root.left == null && root.right == null && root.val == sum) return true;
+    return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+}
+```
+
+### 7. 统计路径和等于一个数的路径数量
+
+路径不一定以 root 开头，也不一定以 leaf 结尾，但是必须连续。
+
+```java
+public int pathSum(TreeNode root, int sum) {
+    if (root == null) return 0;
+    int ret = pathSumStartWithRoot(root, sum) + pathSum(root.left, sum) + pathSum(root.right, sum);
+    return ret;
+}
+
+private int pathSumStartWithRoot(TreeNode root, int sum) {
+    if (root == null) return 0;
+    int ret = 0;
+    if (root.val == sum) ret++;
+    ret += pathSumStartWithRoot(root.left, sum - root.val) + pathSumStartWithRoot(root.right, sum - root.val);
+    return ret;
+}
+```
+
+### 8. 子树
+
+```java
+public boolean isSubtree(TreeNode s, TreeNode t) {
+    if (s == null) return false;
+    return isSubtreeWithRoot(s, t) || isSubtree(s.left, t) || isSubtree(s.right, t);
+}
+
+private boolean isSubtreeWithRoot(TreeNode s, TreeNode t) {
+    if (t == null && s == null) return true;
+    if (t == null || s == null) return false;
+    if (t.val != s.val) return false;
+    return isSubtreeWithRoot(s.left, t.left) && isSubtreeWithRoot(s.right, t.right);
+}
+```
+
+### 9. 树的对称
+
+```java
+public boolean isSymmetric(TreeNode root) {
+    if (root == null) return true;
+    return isSymmetric(root.left, root.right);
+}
+
+private boolean isSymmetric(TreeNode t1, TreeNode t2) {
+    if (t1 == null && t2 == null) return true;
+    if (t1 == null || t2 == null) return false;
+    if (t1.val != t2.val) return false;
+    return isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
+}
+```
+
+### 10. 最小路径
+
+树的根节点到叶子节点的最小路径长度
+
+```java
+public int minDepth(TreeNode root) {
+    if (root == null) return 0;
+    int left = minDepth(root.left);
+    int right = minDepth(root.right);
+    if (left == 0 || right == 0) return left + right + 1;
+    return Math.min(left, right) + 1;
+}
+```
+
+```java
+class Solution {
+  public int minDepth(TreeNode root) {
+    if (root == null) {
+      return 0;
+    }
+
+    if ((root.left == null) && (root.right == null)) {
+      return 1;
+    }
+
+    int min_depth = Integer.MAX_VALUE;
+    if (root.left != null) {
+      min_depth = Math.min(minDepth(root.left), min_depth);
+    }
+    if (root.right != null) {
+      min_depth = Math.min(minDepth(root.right), min_depth);
+    }
+
+    return min_depth + 1;
+  }
+}
+```
+
+### 11. 相同节点值的最大路径
+
+```java
+class Solution {
+    int ans;
+    public int longestUnivaluePath(TreeNode root) {
+        ans = 0;
+        arrowLength(root);
+        return ans;
+    }
+    public int arrowLength(TreeNode node) {
+        if (node == null) return 0;
+        int left = arrowLength(node.left);
+        int right = arrowLength(node.right);
+        int arrowLeft = 0, arrowRight = 0;
+        if (node.left != null && node.left.val == node.val) {
+            arrowLeft += left + 1;
+        }
+        if (node.right != null && node.right.val == node.val) {
+            arrowRight += right + 1;
+        }
+        ans = Math.max(ans, arrowLeft + arrowRight);
+        return Math.max(arrowLeft, arrowRight);
+    }
+}
+```
+
+### 12. 间隔遍历
+
+337 打家劫舍III
+
+```java
+public int rob(TreeNode root) {
+    if (root == null) return 0;
+    int val1 = root.val;
+    if (root.left != null) val1 += rob(root.left.left) + rob(root.left.right);
+    if (root.right != null) val1 += rob(root.right.left) + rob(root.right.right);
+    int val2 = rob(root.left) + rob(root.right);
+    return Math.max(val1, val2);
+}
+```
+
+### 13. 找出二叉树中第二小的数
+
+```java
+public int findSecondMinimumValue(TreeNode root) {
+    if (root == null) return -1;
+    if (root.left == null && root.right == null) return -1;
+    int leftVal = root.left.val;
+    int rightVal = root.right.val;
+    if (leftVal == root.val) leftVal = findSecondMinimumValue(root.left);
+    if (rightVal == root.val) rightVal = findSecondMinimumValue(root.right);
+    if (leftVal != -1 && rightVal != -1) return Math.min(leftVal, rightVal);
+    if (leftVal != -1) return leftVal;
+    return rightVal;
+}
+```
+
+### 层次遍历
 
 
-## 图
 
 ### 判断是否为二分图
 
